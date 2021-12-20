@@ -1,4 +1,3 @@
-package com.example.exchangeratesconversion
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
