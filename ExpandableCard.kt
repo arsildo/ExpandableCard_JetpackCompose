@@ -22,54 +22,48 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExpandableCard(
-    header: String, // Header
-    description: String, // Description
-    color: Color, // Color
+    header: String, // header
+    description: String, // description
+    color: Color, // color
 ) {
-    var expand by remember { mutableStateOf(false) } // Expand State
-    val rotationState by animateFloatAsState(if (expand) 180f else 0f) // Rotation State
-    var stroke by remember { mutableStateOf(1) } // Stroke State
+    var expanded by remember { mutableStateOf(false) } // Expand State
+    val rotationState by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        label = "Rotation state of expand icon button",
+    )
+    val strokeState by animateDpAsState(
+        targetValue = if (expanded) 2.dp else 1.dp,
+        label = "Stroke width",
+    )
+
     Card(
-        modifier = Modifier
-            .animateContentSize( // Animation
-                animationSpec = tween(
-                    durationMillis = 400, // Animation Speed
-                    easing = LinearOutSlowInEasing // Animation Type
-                )
-            )
-            .padding(8.dp),
+        modifier = Modifier.padding(8.dp),
         backgroundColor = Color.White,
-        shape = RoundedCornerShape(8.dp), // Shape
-        border = BorderStroke(stroke.dp, color), // Stroke Width and Color
-        onClick = {
-            expand = !expand
-            stroke = if (expand) 2 else 1
-        }
+        shape = RoundedCornerShape(8.dp), // shape
+        border = BorderStroke(strokeState, color), // stroke Width and Color
+        onClick = { expanded = !expanded }
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize() // edit animation here
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween // Control the header Alignment over here.
+                horizontalArrangement = Arrangement.SpaceBetween // control the header alignment over here.
             ) {
                 Text(
                     text = header,
-                    color = color, // Header Color
+                    color = color, // header color
                     fontSize = 20.sp,
                     textAlign = TextAlign.Start,
                     fontWeight = FontWeight.Normal,
-                    modifier = Modifier.weight(.9f).padding(start = 8.dp)
                 )
                 IconButton(
-                    modifier = Modifier
-                        .rotate(rotationState)
-                        .weight(.1f),
-                    onClick = {
-                        expand = !expand
-                        stroke = if (expand) 2 else 1
-                    }
+                    modifier = Modifier.rotate(rotationState),
+                    onClick = { expanded = !expanded }
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
@@ -78,18 +72,18 @@ fun ExpandableCard(
                     )
                 }
             }
-            if (expand) {
+            if (expanded) {
                 Text(
                     text = description,
-                    color = color, // Description Color
+                    color = color, // description color
                     fontSize = 16.sp,
                     textAlign = TextAlign.Start,
                     fontWeight = FontWeight.Normal,
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
                 )
             }
         }
     }
-
 }
